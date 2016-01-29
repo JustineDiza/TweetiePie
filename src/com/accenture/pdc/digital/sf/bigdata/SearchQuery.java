@@ -10,25 +10,29 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
 public class SearchQuery {
+	
 	private Twitter twitter;
 	private String searchQuery;
 	
+	// Returns searchQuery configuration
 	public SearchQuery(Twitter twitter) {
 		this.twitter = twitter;
 	}
 	
 	public ArrayList<Status> getResults(String searchQuery) throws TwitterException, InterruptedException {
+		
 		Query query = new Query(searchQuery);
-		int numberOfTweets = 9999;
+		int numberOfTweets = 5000;
 		long lastID = Long.MAX_VALUE;
-
 		ArrayList<Status> tweets = new ArrayList<Status>();
 		int lastTweetSize = -1;
+		
 		while (tweets.size() < numberOfTweets) {
 			
-			//handles twitter api limit
+			// Handles Twitter api limit
 			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
 			//System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
+			
 			if(rls.getRemaining()<3) {
 				System.out.println("Rate Limit Exceeded. Sleeping for " + rls.getSecondsUntilReset() + " seconds.");
 				Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
