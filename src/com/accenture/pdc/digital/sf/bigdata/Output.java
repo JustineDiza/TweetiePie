@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import twitter4j.Place;
 import twitter4j.Status;
@@ -25,7 +26,8 @@ public class Output {
 					"User Name" + PIPE_DELIMITER +
 					"Nickname" + PIPE_DELIMITER +
 					"Tweet Content" + PIPE_DELIMITER +
-					"Country" + PIPE_DELIMITER + "\n");
+					"Country" + PIPE_DELIMITER + 
+					"Hashtag/Username" + "\n");
 			
 			for (int i = 0; i < tweets.size(); i++) {
 				Status t = (Status) tweets.get(i);
@@ -47,10 +49,58 @@ public class Output {
 						username + PIPE_DELIMITER +
 						nickname + PIPE_DELIMITER +
 						msg + PIPE_DELIMITER +
-						country + "\n");
+						country + PIPE_DELIMITER +
+						searchQuery + "\n");
 			}
 		} catch (IOException e) {
 			System.err.println("Error while writing file (Output.toCSV)");
+			e.printStackTrace();
+		}
+	}
+	
+
+	public static void consolidated(List<ArrayList<Status>> list, List<String> hashtags) {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File(new SimpleDateFormat("MM-dd-yyyy_HH-mm").format(new Date()) + "_Consolidated.txt")));
+			
+			bw.write("Tweet ID" + PIPE_DELIMITER +
+					"Date" + PIPE_DELIMITER +
+					"Hour" + PIPE_DELIMITER +
+					"User Name" + PIPE_DELIMITER +
+					"Nickname" + PIPE_DELIMITER +
+					"Tweet Content" + PIPE_DELIMITER +
+					"Country" + PIPE_DELIMITER + 
+					"Hashtag/Username" + "\n");
+			for(int i=0; i<list.size(); i++) {
+				ArrayList<Status> tweets = list.get(i);
+				String hashtag = hashtags.get(i);
+			//for(ArrayList<Status> tweets : list) {
+				for (int j = 0; j < tweets.size(); j++) {
+					Status t = (Status) tweets.get(j);
+					String username = t.getUser().getScreenName();
+					String nickname = t.getUser().getName();
+					String msg = t.getText();
+					Date date = t.getCreatedAt();
+					String day = new SimpleDateFormat("yyyy-MM-dd").format(date);
+					String hour = new SimpleDateFormat("HH:mm").format(date);
+					long id = t.getId();
+					String country = "";
+					Place place = t.getPlace();
+					if(place!=null)
+						country = place.getCountryCode();
+					
+					bw.write(id + PIPE_DELIMITER + 
+							day + PIPE_DELIMITER +
+							hour + PIPE_DELIMITER +
+							username + PIPE_DELIMITER +
+							nickname + PIPE_DELIMITER +
+							msg + PIPE_DELIMITER +
+							country + PIPE_DELIMITER +
+							hashtag + "\n");
+				}
+			}
+		} catch (IOException e) {
+			System.err.println("Error while writing consolidated file");
 			e.printStackTrace();
 		}
 	}

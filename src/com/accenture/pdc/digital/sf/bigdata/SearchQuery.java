@@ -35,7 +35,12 @@ public class SearchQuery {
 			
 			if(rls.getRemaining()<3) {
 				System.out.println("Rate Limit Exceeded. Sleeping for " + rls.getSecondsUntilReset() + " seconds.");
-				Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
+				//Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
+				for(int i=1; i<rls.getSecondsUntilReset()+2; i++) {
+					System.out.print("\b\b\b\b\b\b\b\b");
+					System.out.print(i);
+					Thread.sleep(1000);
+				}
 			}
 			
 			//

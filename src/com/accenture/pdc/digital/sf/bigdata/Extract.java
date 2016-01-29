@@ -1,6 +1,7 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import twitter4j.RateLimitStatus;
 import twitter4j.Status;
@@ -39,16 +40,30 @@ public class Extract {
 		
 		SearchQuery sq = new SearchQuery(twitter);
 		
+		//List of lists of searches
+		List<ArrayList<Status>> listOfLists = new ArrayList<ArrayList<Status>>();
+		
+		//Hashtags/usernames list
+		if(args.length<0){
+			System.err.println("Arguments Required: Text file containing the list of hashtags/username");
+			System.exit(1);
+		}
+		List<String> hashtags = Utils.getHashtags(args[0]);
+		
+		//create a temporary list for the output hashtag/username column
+		List<String> outputHashtagColumn = new ArrayList<String>();
+		
 		//Search for hashtags
-		for(String hashtag : Utils.getHashtags(args[0])) {
+		for(String hashtag : hashtags) {
 			ArrayList<Status> tweets = sq.getResults(hashtag);
-
-			//output to csv
-			if(tweets.size() > 0)
-				Output.toTXT(tweets, hashtag);
-			
-
+			if(tweets.size()>0) {
+				listOfLists.add(tweets);
+				outputHashtagColumn.add(hashtag);
+			}
 			System.out.println();
 		}
+		
+		//output to consolidated
+		Output.consolidated(listOfLists,outputHashtagColumn);
 	}
 }
