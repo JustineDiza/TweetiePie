@@ -25,6 +25,8 @@ public class SearchQuery {
 		ArrayList<Status> tweets = new ArrayList<Status>();
 		int lastTweetSize = -1;
 		while (tweets.size() < numberOfTweets) {
+			
+			//handles twitter api limit
 			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
 			System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
 			if(rls.getRemaining()<1) {
@@ -32,6 +34,7 @@ public class SearchQuery {
 				Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
 			}
 			
+			//
 			if (numberOfTweets - tweets.size() > 100)
 				query.setCount(100);
 			else

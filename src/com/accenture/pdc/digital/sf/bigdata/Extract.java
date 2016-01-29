@@ -42,15 +42,7 @@ public class Extract {
 			if(tweets.size() > 0)
 				Output.toTXT(tweets, hashtag);
 			
-			//get Twitter limit
-			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
-			System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
-			
-			//let the API rest
-			for(int i=0; i<10; i++) {
-				System.out.print(".");
-				Thread.sleep(1000);
-			}
+
 			System.out.println();
 		}
 	}
