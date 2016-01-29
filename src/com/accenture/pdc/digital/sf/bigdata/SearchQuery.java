@@ -28,8 +28,8 @@ public class SearchQuery {
 			
 			//handles twitter api limit
 			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
-			System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
-			if(rls.getRemaining()<1) {
+			//System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
+			if(rls.getRemaining()<3) {
 				System.out.println("Rate Limit Exceeded. Sleeping for " + rls.getSecondsUntilReset() + " seconds.");
 				Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
 			}
