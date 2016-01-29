@@ -18,7 +18,7 @@ public class SearchQuery {
 	
 	public ArrayList<Status> getResults(String searchQuery) {
 		Query query = new Query(searchQuery);
-		int numberOfTweets = 1000;
+		int numberOfTweets = 9999;
 		long lastID = Long.MAX_VALUE;
 
 		ArrayList<Status> tweets = new ArrayList<Status>();
@@ -32,8 +32,7 @@ public class SearchQuery {
 			try {
 				QueryResult result = twitter.search(query);
 				tweets.addAll(result.getTweets());
-				System.out.println("Gathered " + tweets.size() + " tweets"
-						+ "\n");
+				System.out.println("Gathered " + tweets.size() + " tweets for " + searchQuery);
 				for (Status t : tweets)
 					if (t.getId() < lastID)
 						lastID = t.getId();
@@ -44,9 +43,9 @@ public class SearchQuery {
 			query.setMaxId(lastID - 1);
 			if(lastTweetSize == tweets.size()) {
 				if(tweets.size() == 0)
-					System.out.println("No tweets found");
+					System.out.println("No tweets found for " + searchQuery);
 				else
-					System.out.println("Total tweets found: " + numberOfTweets);
+					System.out.println("Total tweets found for " + searchQuery + ": " + tweets.size());
 				break;
 			}
 			lastTweetSize = tweets.size();

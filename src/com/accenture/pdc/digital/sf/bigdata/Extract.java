@@ -31,34 +31,28 @@ public class Extract {
 		String consumerSecret = "gln71DwWHt49PV4PzSKr7in6QrGFBnX9QzuCI0lo7uoT3nuiUD";
 		String accessToken = "303762449-dQvHXhvtz3AlaOWK2vECkglHNhLE62IIbXxSWEel";
 		String accessTokenSecret = "APvYs2OQLcZYs16mZBPrIKLqzGkN3UlfjIuPpJ9ONK4Kd";
-		String searchQuery = "#BigData";
+		//String searchQuery = "Patrick Joshua";
 		
 		Twitter twitter = initConfiguration(consumerKey,
 				consumerSecret,
 				accessToken,
 				accessTokenSecret);
 		SearchQuery sq = new SearchQuery(twitter);
-		ArrayList<Status> tweets = sq.getResults(searchQuery);
 		
-		
-		
-		
-		//for pretty printing only
-		for (int i = 0; i < tweets.size(); i++) {
-			Status t = (Status) tweets.get(i);
-			GeoLocation loc = t.getGeoLocation();
-			String user = t.getUser().getScreenName();
-			String msg = t.getText();
-			Date date = t.getCreatedAt();
-			long id = t.getId();
-			String country = null;
-			Place place = t.getPlace();
-			if(place!=null)
-				country = place.getCountryCode();
-			//Double lat = t.getGeoLocation().getLatitude();
-			//Double lon = t.getGeoLocation().getLongitude();
-			System.out.println(i + " USER: " + user + " wrote: " + msg
-					+ "\nLocation: " + country + "\n"); // + " " + lat + "," + lon + "\n");
+		//Search for hashtags
+		for(String hashtag : Utils.getHashtags(args[0])) {
+			ArrayList<Status> tweets = sq.getResults(hashtag);
+
+			//output to csv
+			if(tweets.size() > 0)
+				Output.toTXT(tweets, hashtag);
+			
+			//let the API rest
+			for(int i=0; i<10; i++) {
+				System.out.print(".");
+				Thread.sleep(1000);
+			}
+			System.out.println();
 		}
 	}
 }
