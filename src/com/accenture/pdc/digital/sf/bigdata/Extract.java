@@ -1,15 +1,10 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-import twitter4j.GeoLocation;
-import twitter4j.Place;
-import twitter4j.Query;
-import twitter4j.QueryResult;
+import twitter4j.RateLimitStatus;
 import twitter4j.Status;
 import twitter4j.Twitter;
-import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
@@ -46,6 +41,10 @@ public class Extract {
 			//output to csv
 			if(tweets.size() > 0)
 				Output.toTXT(tweets, hashtag);
+			
+			//get Twitter limit
+			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
+			System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
 			
 			//let the API rest
 			for(int i=0; i<10; i++) {
