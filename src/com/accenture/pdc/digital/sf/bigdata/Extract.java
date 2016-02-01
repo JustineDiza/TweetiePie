@@ -1,5 +1,11 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
+/*
+ * TweetiePie main class. It accepts a text file of hashtags/mentions.
+ * Primary purpose: to extract significant user sentiment.
+ * Output file is in the form of .CSV
+ */
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +30,7 @@ public class Extract {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		
 		// TO CHANGE: Main class to accept ARGS instead of static values; in cases that registered account reaches limit
 		// Sets values  for keys and tokens, best to keep this hidden/encapsulate the keys and tokens
 		String consumerKey = "VGBD5O2Y4TGWwwFrVSFQeH8oA";
@@ -32,30 +39,29 @@ public class Extract {
 		String accessTokenSecret = "APvYs2OQLcZYs16mZBPrIKLqzGkN3UlfjIuPpJ9ONK4Kd";
 		
 		// Setting connection
-		Twitter twitter = initConfiguration(consumerKey,
-				consumerSecret,
-				accessToken,
-				accessTokenSecret);
+		Twitter twitter = initConfiguration(consumerKey, consumerSecret,
+											accessToken, accessTokenSecret);
 		
 		
 		SearchQuery sq = new SearchQuery(twitter);
 		
-		//List of lists of searches
+		// List of lists of searches
 		List<ArrayList<Status>> listOfLists = new ArrayList<ArrayList<Status>>();
 		
-		//Hashtags/usernames list
+		// Hashtags/usernames list
 		if(args.length<0){
 			System.err.println("Arguments Required: Text file containing the list of hashtags/username");
 			System.exit(1);
 		}
 		List<String> hashtags = Utils.getHashtags(args[0]);
 		
-		//create a temporary list for the output hashtag/username column
+		// create a temporary list for the output hashtag/username column
 		List<String> outputHashtagColumn = new ArrayList<String>();
 		
-		//Search for hashtags
+		// Search for hashtags
 		for(String hashtag : hashtags) {
 			ArrayList<Status> tweets = sq.getResults(hashtag);
+		
 			if(tweets.size()>0) {
 				listOfLists.add(tweets);
 				outputHashtagColumn.add(hashtag);
@@ -63,7 +69,7 @@ public class Extract {
 			System.out.println();
 		}
 		
-		//output to consolidated
+		// output to consolidated
 		Output.consolidated(listOfLists,outputHashtagColumn);
 	}
 }

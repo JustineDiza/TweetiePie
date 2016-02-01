@@ -1,5 +1,11 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
+/*
+ * TweetiePie output file writer. It accepts an array list of lists.
+ * Primary purpose: to write data into specified format.
+ * Output is in .CSV form.
+ * */
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -100,7 +106,7 @@ public class Output {
 				}
 			}
 		} catch (IOException e) {
-			System.err.println("Error while writing consolidated file");
+			System.err.println("Error while writing consolidated file.");
 			e.printStackTrace();
 		}
 	}

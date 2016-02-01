@@ -1,5 +1,11 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
+/*
+ * TweetiePie input file reader. It reads the input text file containing hashtags/mentions.
+ * Primary purpose: to convert text into String hashtag.
+ * Output is a list of hashtags.
+ * */
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
