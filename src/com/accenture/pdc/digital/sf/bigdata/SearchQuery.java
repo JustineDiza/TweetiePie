@@ -7,6 +7,7 @@ package com.accenture.pdc.digital.sf.bigdata;
  */
 
 import java.util.ArrayList;
+import java.util.List;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -31,7 +32,8 @@ public class SearchQuery {
 	public ArrayList<Status> getResults(String searchQuery) throws TwitterException, InterruptedException {
 		
 		Query query = new Query(searchQuery);
-		int numberOfTweets = 5000; // Limit of tweets to search
+		
+		int numberOfTweets = 500; // Limit of tweets to search
 		long lastID = Long.MAX_VALUE; // Assume last attainable ID
 		
 		ArrayList<Status> tweets = new ArrayList<Status>();
@@ -39,18 +41,26 @@ public class SearchQuery {
 		
 		while (tweets.size() < numberOfTweets) {
 			
-			// Handles Twitter api limit
+			// Handles Twitter API limit
 			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
-			//System.out.println("Limit:" + rls.getLimit() + " Remaining:" + rls.getRemaining() + " SecToReset:" + rls.getSecondsUntilReset());
+			System.out.println("Rate Limit Status: " + rls.getRemaining()  + "/" + rls.getLimit() + " SecToReset:" + rls.getSecondsUntilReset());
 			
-			if(rls.getRemaining()<3) {
+			// Let thread sleep to wait for refresh for rate limit
+			if(rls.getRemaining()==50 && rls.getSecondsUntilReset()>0) {
 				System.out.println("Rate Limit Exceeded. Sleeping for " + rls.getSecondsUntilReset() + " seconds.");
-				//Thread.sleep((rls.getSecondsUntilReset()*1000)+2000);
-				for(int i=1; i<rls.getSecondsUntilReset()+2; i++) {
-					System.out.print("\b\b\b\b\b\b\b\b");
-					System.out.print(i);
-					Thread.sleep(1000);
-				}
+				//Thread.sleep((rls.getSecondsUntilReset())*1000);
+				
+				// Simple Countdown Timer
+				int time = rls.getSecondsUntilReset();
+				        long delay = time * 1000;
+
+				        do{
+				            Thread.sleep(1000);
+				            System.out.println("\b\b\b\b" + time / 1);
+				            time = time - 1;
+				            delay = delay - 1000;
+				        }while (delay != 0);
+
 			}
 			
 			// maximum of 100 tweets returned per page
@@ -61,21 +71,16 @@ public class SearchQuery {
 			
 			
 			try {
+				// for hashtags
 				QueryResult result = twitter.search(query);
-				tweets.addAll(result.getTweets()); //removed this for now, need to add location to each user who tweeted before adding to the list
+				tweets.addAll(result.getTweets());
+				
 				
 				System.out.println("Gathered " + tweets.size() + " tweets for " + searchQuery);
+				System.out.println("-------------------------");
 				for (Status t : tweets) {
 					if (t.getId() < lastID)
 						lastID = t.getId();
-					
-//					// Adding location to search query
-//					if(!t.getUser().getLocation().isEmpty()){
-//						System.out.println("Location of user " + t.getUser() +" is at: " + t.getUser().getLocation());
-//						Thread.sleep(1000);
-//					}
-//					
-//					// tweets.add(t.getUser().getLocation());
 				}
 				
 				
@@ -89,14 +94,12 @@ public class SearchQuery {
 			if(lastTweetSize == tweets.size()) {
 				if(tweets.size() == 0)
 					System.out.println("No tweets found for " + searchQuery);
-				else
-					System.out.println("Total tweets found for " + searchQuery + ": " + tweets.size());
 				break;
 			}
 			
 			lastTweetSize = tweets.size();
 		}
-		
+		System.out.println("Total tweets found for " + searchQuery + ": " + tweets.size());
 		return tweets;
 	}
 }

@@ -1,5 +1,10 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
+import java.util.ArrayList;
+
+import twitter4j.Place;
+import twitter4j.Status;
+
 /*
  * TweetiePie coding playground. It's a freestyle class that can do anything required.
  * TESTING: obtaining location of user
@@ -25,15 +30,18 @@ public class Tweetsie {
 			Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
 			try {
-			User u= twitter.showUser("KaekoEspiritu");
+			User u= twitter.showUser("JasmineEve");
 
 			String user = u.getScreenName();
 			String location = u.getLocation();
 			String description = u.getDescription();
-
+			u.getName();
+			
+			System.out.println(u.getName());
 			System.out.println("Namn: " + user);
 			System.out.println("Location: " + location);
 			System.out.println("Description: " + description);
+			
 
 			}
 
