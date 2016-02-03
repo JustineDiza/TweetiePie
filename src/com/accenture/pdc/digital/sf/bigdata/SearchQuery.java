@@ -9,6 +9,7 @@ package com.accenture.pdc.digital.sf.bigdata;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.Paging;
 import twitter4j.Query;
 import twitter4j.QueryResult;
 import twitter4j.RateLimitStatus;
@@ -34,16 +35,18 @@ public class SearchQuery {
 		Query query = new Query(searchQuery);
 		
 		int numberOfTweets = 500; // Limit of tweets to search
+		
 		long lastID = Long.MAX_VALUE; // Assume last attainable ID
 		
 		ArrayList<Status> tweets = new ArrayList<Status>();
 		int lastTweetSize = -1; // Added to avoid infinite loop
 		
+		
 		while (tweets.size() < numberOfTweets) {
 			
 			// Handles Twitter API limit
 			RateLimitStatus rls = twitter.getRateLimitStatus().get("/search/tweets");
-			System.out.println("Rate Limit Status: " + rls.getRemaining()  + "/" + rls.getLimit() + " SecToReset:" + rls.getSecondsUntilReset());
+			System.out.print("Rate Limit Status: " + rls.getRemaining()  + "/" + rls.getLimit() + " SecToReset:" + rls.getSecondsUntilReset() + "\t|\t");
 			
 			// Let thread sleep to wait for refresh for rate limit
 			if(rls.getRemaining()==50 && rls.getSecondsUntilReset()>0) {
@@ -71,18 +74,33 @@ public class SearchQuery {
 			
 			
 			try {
-				// for hashtags
+				// For general hashtags
 				QueryResult result = twitter.search(query);
 				tweets.addAll(result.getTweets());
-				
-				
+
+				    	int pageno = 1; // Indicator for pagenumber in pagination
+				    	Paging paging = new Paging(pageno,100); // To get more than just 20 tweets of the user
+				    	
+						// For getting the User Timeline
+						// If searchQuery starts with @, remove @ and add searchQuery item in getUserTimeline parameter
+						if(searchQuery.contains("@")==true){
+							String sq = searchQuery.substring(1);
+							List<Status> statuses = twitter.getUserTimeline(sq,paging);
+							// For testing purposes ONLY
+//						    for (Status status : statuses) {
+//						        System.out.println(status.getUser().getName() + ":" +
+//						                           status.getText());
+//						}
+						  tweets.addAll(statuses);
+						}
+				    	
+				    	
 				System.out.println("Gathered " + tweets.size() + " tweets for " + searchQuery);
-				System.out.println("-------------------------");
+				
 				for (Status t : tweets) {
 					if (t.getId() < lastID)
 						lastID = t.getId();
 				}
-				
 				
 			} catch (TwitterException te) {
 				System.out.println("Couldn't connect: " + te);
@@ -99,6 +117,8 @@ public class SearchQuery {
 			
 			lastTweetSize = tweets.size();
 		}
+
+		System.out.println("-------------------------");
 		System.out.println("Total tweets found for " + searchQuery + ": " + tweets.size());
 		return tweets;
 	}

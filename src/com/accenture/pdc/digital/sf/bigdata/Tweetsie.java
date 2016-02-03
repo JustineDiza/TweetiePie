@@ -1,7 +1,9 @@
 package com.accenture.pdc.digital.sf.bigdata;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import twitter4j.Paging;
 import twitter4j.Place;
 import twitter4j.Status;
 
@@ -19,7 +21,7 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class Tweetsie {
 
-		public static void main(String args[]){
+		public static void main(String args[]) throws TwitterException{
 
 			ConfigurationBuilder cb = new ConfigurationBuilder();
 			cb.setOAuthConsumerKey("S5iE1Cd5tTGZsd2rBNLqSQ");
@@ -29,24 +31,32 @@ public class Tweetsie {
 
 			Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
-			try {
-			User u= twitter.showUser("JasmineEve");
+			int pageno = 1;
+			String user1 = "cnn";
+			List statuses1 = new ArrayList();
 
-			String user = u.getScreenName();
-			String location = u.getLocation();
-			String description = u.getDescription();
-			u.getName();
-			
-			System.out.println(u.getName());
-			System.out.println("Namn: " + user);
-			System.out.println("Location: " + location);
-			System.out.println("Description: " + description);
-			
 
+			while (true) {
+
+			  try {
+			    int size = statuses1.size(); 
+			    Paging page = new Paging(pageno++, 100);
+			    statuses1.addAll(twitter.getUserTimeline(user1, page));
+
+				Status status = (Status)statuses1.get(pageno);
+			    
+			    System.out.println("Taking quite a while here!");
+				System.out.println(status.getUser().getName() + ": " + status.getText());
+			    if (statuses1.size() == size)
+			      break;
+			  }
+			  catch(TwitterException e) {
+
+			    e.printStackTrace();
+			  }
 			}
 
-			catch (TwitterException te) {
-			System.out.println("Couldn't connect: " + te);
-			}
+			System.out.println("Total: "+statuses1.size());
+			System.out.println(twitter.getUserTimeline(user1));
 		}
 }

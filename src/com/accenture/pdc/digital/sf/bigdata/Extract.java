@@ -54,17 +54,27 @@ public class Extract {
 		}
 		
 		List<String> hashtags = Utils.getHashtags(args[0]);
-		
+		List<String> mentions = Utils.getMentions(args[1]);
+ 		
 		// Create a temporary list for the output hashtag/username column
 		List<String> outputHashtagColumn = new ArrayList<String>();
 		
 		// Search for hashtags
 		for(String hashtag : hashtags) {
 			ArrayList<Status> tweets = sq.getResults(hashtag);
-			
 		    if(tweets.size()>0) {
 				listOfLists.add(tweets);
 				outputHashtagColumn.add(hashtag);
+			}
+			System.out.println();
+		}
+		
+		// Search for mentions
+		for(String mention : mentions) {
+			ArrayList<Status> tweets = sq.getResults(mention);
+			if(tweets.size()>0) {
+				listOfLists.add(tweets);
+				outputHashtagColumn.add(mention);
 			}
 			System.out.println();
 		}

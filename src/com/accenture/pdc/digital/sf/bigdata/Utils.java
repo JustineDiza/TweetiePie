@@ -22,8 +22,10 @@ import twitter4j.Status;
 
 public class Utils {
 
+	// To get hashtags
 	public static List<String> getHashtags(String filePath) {
 		List<String> hashtags = new ArrayList<String>();
+		
 		try {
 			BufferedReader br = new BufferedReader(
 					new FileReader(
@@ -31,9 +33,11 @@ public class Utils {
 			String hashtag;
 			
 			try {
-				while((hashtag = br.readLine()) != null) 
+				// Getting hashtags that start with #
+				while((hashtag = br.readLine()) != null)
 					hashtags.add(hashtag);
 
+				
 			} catch (IOException e) {
 				System.err.println("Error while reading the file");
 				e.printStackTrace();
@@ -44,5 +48,34 @@ public class Utils {
 		}
 		
 		return hashtags;
-	}
+		}
+	
+	// To get mentions
+	public static List<String> getMentions(String filePath){
+
+		List<String> mentions = new ArrayList<String>();
+		
+		try {
+			BufferedReader br = new BufferedReader(
+					new FileReader(
+							new File(filePath)));
+			String mention;
+			
+			try {
+				// Getting hashtags that start with @
+				while((mention = br.readLine()) != null)
+					mentions.add(mention);
+				
+			} catch (IOException e) {
+				System.err.println("Error while reading the file");
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("File not found (" + filePath + ")");
+			e.printStackTrace();
+		}
+		
+		return mentions;
+		}
 }
+

@@ -107,7 +107,7 @@ public class Output {
 							hashtag + "\n");
 				}
 			}
-			System.out.println("File has been created at folder TweetiePie.");
+			System.out.println("Output file has been created at folder TweetiePie.");
 		} catch (IOException e) {
 			System.err.println("Error while writing consolidated file.");
 			e.printStackTrace();
