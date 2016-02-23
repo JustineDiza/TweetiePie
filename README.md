@@ -1,11 +1,8 @@
 # TweetiePie
 Simple tweet extractor for data visualization purposes. 
 
-Requires two sources of input namely:
-- a hashtag(campaign) text file
-- a mentions(username) text file
-
-(Input file paths must follow this precedence: hashtags.txt mentions.txt)
+Requires an input text file via Java arguments:
+- a text file containing hashtags (#), usernames (@), and keywords (no prefix)
 
 Output file is a text file delimited with pipe character containing columns namely:
 - Tweet ID,
