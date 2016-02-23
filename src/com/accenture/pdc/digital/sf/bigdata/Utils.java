@@ -48,7 +48,7 @@ public class Utils {
 		}
 		
 		return hashtags;
-		}
+	}
 	
 	// To get mentions
 	public static List<String> getMentions(String filePath){
@@ -77,5 +77,38 @@ public class Utils {
 		
 		return mentions;
 		}
+	
+	public static List<String> loadKeywords(String filePath, char prefix) {
+		List<String> hashtags = new ArrayList<String>();
+		
+		try {
+			BufferedReader br = new BufferedReader(
+					new FileReader(
+							new File(filePath)));
+			String hashtag;
+			
+			try {
+				// Getting hashtags that start with #
+				while((hashtag = br.readLine()) != null) {
+					
+					//ignore hashtags and usernames
+					if(prefix == ' ') {
+						if(!(hashtag.startsWith("#") || hashtag.startsWith("@")))
+							hashtags.add(hashtag);
+					} else if(hashtag.startsWith(Character.toString(prefix)))	//add either hashtag or username depending on the parameter
+						hashtags.add(hashtag);
+				}
+
+			} catch (IOException e) {
+				System.err.println("Error while reading the file");
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("File not found (" + filePath + ")");
+			e.printStackTrace();
+		}
+		
+		return hashtags;
+	}
 }
 

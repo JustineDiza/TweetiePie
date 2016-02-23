@@ -53,8 +53,9 @@ public class Extract {
 			System.exit(1);
 		}
 		
-		List<String> hashtags = Utils.getHashtags(args[0]);
-		List<String> mentions = Utils.getMentions(args[1]);
+		List<String> hashtags = Utils.loadKeywords(args[0],'#');
+		List<String> mentions = Utils.loadKeywords(args[0],'@');
+		List<String> keywords = Utils.loadKeywords(args[0],' ');	//use space char to ignore @ or #
  		
 		// Create a temporary list for the output hashtag/username column
 		List<String> outputHashtagColumn = new ArrayList<String>();
